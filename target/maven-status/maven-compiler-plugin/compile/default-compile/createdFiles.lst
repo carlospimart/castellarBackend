@@ -1,0 +1,7 @@
+com\castellar\carlos\picon\AuthorRepository.class
+com\castellar\carlos\picon\LanguageRepository.class
+com\castellar\carlos\picon\UsersRepository.class
+com\castellar\carlos\picon\server.class
+com\castellar\carlos\picon\Author.class
+com\castellar\carlos\picon\Users.class
+com\castellar\carlos\picon\Language.class

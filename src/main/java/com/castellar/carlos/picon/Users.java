@@ -2,6 +2,7 @@ package com.castellar.carlos.picon;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Set;
     @Entity
     @Table(name ="users")
@@ -20,24 +21,30 @@ import java.util.Set;
 
         private String first_name;
         private String last_name;
+        private String gender;
+        private String dob;
         private String email;
         private String username;
         private String password;
         private String city;
         private String address;
         private String post_code;
+        private String phone_number;
 
-        public Users(String first_name, String last_name,String email,
-                     String username, String password, String city,
-                     String address, String post_code){
+        public Users(String first_name, String last_name, String gender,
+                     String dob,String email, String username, String password,
+                     String city, String address, String post_code, String phone_number){
             this.first_name = first_name;
             this.last_name = last_name;
+            this.gender = gender;
+            this.dob = dob;
             this.email = email;
             this.username = username;
             this.password = password;
             this.city = city;
             this.address = address;
             this.post_code = post_code;
+            this.phone_number = phone_number;
 
 
 
@@ -62,7 +69,23 @@ import java.util.Set;
             return last_name;
         }
 
-        public void setUEmail(String email) {
+        public void setGender(String Gender) {
+            this.gender = gender;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        public void setDob(String dob) {
+            this.dob = dob;
+        }
+
+        public String getDob() {
+            return dob;
+        }
+
+        public void setEmail(String email) {
             this.email = email;
         }
 
@@ -108,6 +131,14 @@ import java.util.Set;
 
         public String getPost_code() {
             return post_code;
+        }
+
+        public void setPhone_number(String phone_number) {
+            this.phone_number = phone_number;
+        }
+
+        public String getPhone_number() {
+            return phone_number;
         }
 
 

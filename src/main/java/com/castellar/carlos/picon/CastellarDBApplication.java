@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.time.LocalDate;
 import java.util.Optional;
 @SpringBootApplication
 @RestController
@@ -104,15 +105,14 @@ public class CastellarDBApplication {
     /********************Users**********************/
     @PostMapping("/AddUsers")
     public @ResponseBody
-    String addUser(@RequestParam String first_name, String last_name,String email,
-                   String username, String password, String city, String address,
-                   String post_code){
-        Users addUser = new Users(first_name,last_name,email,username, password, city,
-                            address, post_code);
+    String addUser(@RequestParam String first_name, String last_name, String email,
+                   String gender, String dob, String username, String password, String city,
+                   String address, String post_code, String phone_number){
+        Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
+                                  city, address, post_code, phone_number);
         usersRepository.save(addUser);
         return save;
     }
-
     @GetMapping("/AllUsers")
     public @ResponseBody
     Iterable<Users> getAllUsers(){
@@ -125,5 +125,25 @@ public class CastellarDBApplication {
         usersRepository.deleteById(users_id);
         return "The user was removed";
     }
-
+    @PutMapping("/updateUser/{users_id}")
+    public @ResponseBody
+    String updateUser(@PathVariable int users_id, @RequestParam String first_name, String last_name,
+                      String email, String gender, String dob, String username, String password,
+                      String city, String address, String post_code, String phone_number){
+        Users updateUser = usersRepository.findById(users_id)
+                .orElseThrow(() ->new ResourceNotFoundException("User ID not found"));
+        updateUser.setFirst_name(first_name);
+        updateUser.setLast_name(last_name);
+        updateUser.setEmail(email);
+        updateUser.setGender(gender);
+        updateUser.setDob(dob);
+        updateUser.setUsername(username);
+        updateUser.setPassword(password);
+        updateUser.setCity(city);
+        updateUser.setAddress(address);
+        updateUser.setPost_code(post_code);
+        updateUser.setPhone_number(phone_number);
+        final Users updatedUser = usersRepository.save(updateUser);
+        return "Updated";
+    }
 }

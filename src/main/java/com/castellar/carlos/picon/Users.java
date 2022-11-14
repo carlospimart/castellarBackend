@@ -30,10 +30,11 @@ import java.util.Set;
         private String address;
         private String post_code;
         private String phone_number;
+        private boolean admin;
 
         public Users(String first_name, String last_name, String gender,
                      String dob,String email, String username, String password,
-                     String city, String address, String post_code, String phone_number){
+                     String city, String address, String post_code, String phone_number, boolean admin){
             this.first_name = first_name;
             this.last_name = last_name;
             this.gender = gender;
@@ -45,6 +46,7 @@ import java.util.Set;
             this.address = address;
             this.post_code = post_code;
             this.phone_number = phone_number;
+            this.admin = admin;
 
 
 
@@ -140,6 +142,15 @@ import java.util.Set;
         public String getPhone_number() {
             return phone_number;
         }
+
+        public void setAdmin(boolean admin) {
+            this.admin = admin;
+        }
+
+        public boolean getAdmin() {
+            return admin;
+        }
+
 
 
         /*public Set<Film>getFilm(){

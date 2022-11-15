@@ -107,9 +107,10 @@ public class CastellarDBApplication {
     public @ResponseBody
     String addUser(@RequestParam String first_name, String last_name, String email,
                    String gender, String dob, String username, String password, String city,
-                   String address, String post_code, String phone_number, boolean admin){
+                   String address, String post_code, String phone_number, boolean admin,
+                   String admin_password){
         Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
-                                  city, address, post_code, phone_number, admin);
+                                  city, address, post_code, phone_number,admin,admin_password);
         usersRepository.save(addUser);
         return save;
     }
@@ -130,7 +131,7 @@ public class CastellarDBApplication {
     String updateUser(@PathVariable int users_id, @RequestParam String first_name, String last_name,
                       String email, String gender, String dob, String username, String password,
                       String city, String address, String post_code, String phone_number,
-                      boolean admin){
+                      boolean admin, String admin_password){
         Users updateUser = usersRepository.findById(users_id)
                 .orElseThrow(() ->new ResourceNotFoundException("User ID not found"));
         updateUser.setFirst_name(first_name);
@@ -145,6 +146,7 @@ public class CastellarDBApplication {
         updateUser.setPost_code(post_code);
         updateUser.setPhone_number(phone_number);
         updateUser.setAdmin(admin);
+        updateUser.setAdmin_password(admin_password);
         final Users updatedUser = usersRepository.save(updateUser);
         return "Updated";
     }

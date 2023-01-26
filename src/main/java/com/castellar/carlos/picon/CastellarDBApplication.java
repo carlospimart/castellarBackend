@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.List;
 @SpringBootApplication
 @RestController
 @RequestMapping("/Homepage")
@@ -17,7 +18,11 @@ public class CastellarDBApplication {
     @Autowired
     private BooksRepository booksRepository;
     @Autowired
+    private BooksHAuthorRepository booksHauthorRepository;
+    @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private ImagesRepository imagesRepository;
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
@@ -25,16 +30,19 @@ public class CastellarDBApplication {
 
     private String save ="save";
     public CastellarDBApplication(BooksRepository booksRepository,
+                                  BooksHAuthorRepository booksHauthorRepository,
                                   AuthorRepository  authorRepository,
+                                  ImagesRepository imagesRepository,
                                   LanguageRepository  languageRepository,
                                   UsersRepository usersRepository){
 
 
         this.booksRepository = booksRepository;
+        this.booksHauthorRepository = booksHauthorRepository;
         this.authorRepository = authorRepository;
+        this.imagesRepository = imagesRepository;
         this.languageRepository = languageRepository;
         this.usersRepository = usersRepository;
-
 
     }
 
@@ -45,30 +53,105 @@ public class CastellarDBApplication {
     }
 
     /********************Author**********************/
+    @PostMapping("/AddAuthors")
+    public @ResponseBody
+    String addAuthor(@RequestParam  String first_name, String middle_name, String last_name, String country){
+        Author addAuthor = new Author (first_name, middle_name, last_name, country);
+        authorRepository.save(addAuthor);
+        return save;
+    }
     @GetMapping("/AllAuthor")
     public @ResponseBody
     Iterable<Author> getAllAuthor(){
         return authorRepository.findAll();
     }
 
+    @DeleteMapping("/DeleteAuthors/{author_id}")
+    public @ResponseBody
+    String removeAuthors(@PathVariable int author_id){
+        authorRepository.deleteById(author_id);
+        return "The author was removed";
+    }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping("/updateAuthors/{author_id}")
+    public @ResponseBody
+    String updateAuthor(@PathVariable int author_id, @RequestParam  String first_name, 
+                        String middle_name, String last_name, String country){
+        Author updateAuthor = authorRepository.findById(author_id)
+                .orElseThrow(() ->new ResourceNotFoundException("Author ID not found"));
+        updateAuthor.setFirst_name(first_name);
+        updateAuthor.setMiddle_name(middle_name);
+        updateAuthor.setLast_name(last_name);
+        updateAuthor.setCountry(country);
+        final Author updatedAuthor = authorRepository.save(updateAuthor);
+        return "Updated";
+    }
     /********************Books**********************/
-
     @PostMapping("/AddBooks")
     public @ResponseBody
-    String addBook(@RequestParam  String title, int year, int language_id, float price,
-                   String condition, String plot){
-        Books addBook = new Books(title, year, language_id, price, condition, plot);
+    String addBook(@RequestParam  String title , int year, float price , String description,
+            String condition_book, String plot, String cover, int language_id, int author_id){
+        Books addBook = new Books(title, year, price, description, condition_book, plot, cover, language_id);
         booksRepository.save(addBook);
+        Books_has_Author addBook_Author = new Books_has_Author(addBook.getBooks_id(), author_id);
+        booksHauthorRepository.save(addBook_Author);
         return save;
     }
+    @PutMapping("/updateBooks/{books_id}")
+    public @ResponseBody
+    String updateBooks(@PathVariable int books_id, @RequestParam String title , int year, float price , String description,
+                      String condition_book, String plot, String cover, int language_id, int author_id){
+        Books updateBooks = booksRepository.findById(books_id)
+                .orElseThrow(() ->new ResourceNotFoundException("Books ID not found"));
+        Books_has_Author updateBook_Has_Author = booksHauthorRepository.findById(books_id)
+                .orElseThrow(() ->new ResourceNotFoundException("Books ID not found"));
+        updateBooks.setTitle(title);
+        updateBooks.setYear(year);
+        updateBooks.setPrice(price);
+        updateBooks.setDescription(description);
+        updateBooks.setCondition(condition_book);
+        updateBooks.setPlot(plot);
+        updateBooks.setCover(cover);
+        updateBooks.setLanguage_id(language_id);
+        updateBook_Has_Author.setAuthor_id(author_id);
+        final Books_has_Author updatedBook_Has_Author = booksHauthorRepository.save(updateBook_Has_Author);
+        final Books updatedBooks = booksRepository.save(updateBooks);
 
+        return "Updated";
+    }
     @GetMapping("/AllBooks")
     public @ResponseBody
     Iterable<Books> getAllBooks(){
         return booksRepository.findAll();
     }
 
-    /********************Languages**********************/
+    @DeleteMapping("/DeleteBooks/{book_id}")
+    public @ResponseBody
+    String removeBook(@PathVariable int book_id){
+        booksRepository.deleteById(book_id);
+        return "The book was removed";
+    }
+    /********************Books_Has_Author**********************/
+    @GetMapping("/AllBook_Author")
+    public @ResponseBody
+    Iterable<Books_has_Author> getAllBooks_has_author(){
+        return booksHauthorRepository.findAll();
+    }
+    @PostMapping("/AddBooks_Has_Author")
+    public @ResponseBody
+    String addBook_Author(@RequestParam int books_id, int author_id){
+
+        Books_has_Author addBook_Author = new Books_has_Author(books_id, author_id);
+        booksHauthorRepository.save(addBook_Author);
+        return save;
+    }
+    /********************Images****************************/
+    @GetMapping("/AllImages")
+    public @ResponseBody
+    Iterable<Images> getAllImages(){
+        return imagesRepository.findAll();
+    }
+    /********************Languages****************************/
 
     @GetMapping("/AllLanguages")
     public @ResponseBody

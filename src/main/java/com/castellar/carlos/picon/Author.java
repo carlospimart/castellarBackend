@@ -17,13 +17,15 @@ public class Author {
     private String first_name;
     private String middle_name;
     private String last_name;
+    private String country;
 
-    public Author(String first_name, String last_name, String middle_name){
+
+    public Author(String first_name, String middle_name, String last_name, String country){
 
         this.first_name = first_name;
-        this.last_name = last_name;
         this.middle_name = middle_name;
-
+        this.last_name = last_name;
+        this.country = country;
     }
     @ManyToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -66,6 +68,13 @@ public class Author {
 
     public String getMiddle_name() {
         return middle_name;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCountry() {
+        return country;
     }
     public Author(){
 

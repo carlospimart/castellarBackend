@@ -9,6 +9,6 @@ public class server implements WebServerFactoryCustomizer<ConfigurableWebServerF
     @Override
     public void customize(ConfigurableWebServerFactory factory) {
         // Setting the port number
-        factory.setPort(1000);
+        factory.setPort(8090);
     }
 }

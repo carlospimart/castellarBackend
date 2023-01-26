@@ -160,13 +160,6 @@ import java.util.Set;
             return admin_password;
         }
 
-        /*public Set<Film>getFilm(){
-            return film;
-        }
-
-        public void setFilm(Set<Film> film) {
-            this.film = film;
-        }*/
         public Users(){
 
         }

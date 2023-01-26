@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Author.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CatellarDatabase</a> &gt; <a href="index.source.html" class="el_package">com.castellar.carlos.picon</a> &gt; <span class="el_source">Author.java</span></div><h1>Author.java</h1><pre class="source lang-java linenums">package com.castellar.carlos.picon;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name =&quot;author&quot;)
+public class Author {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int author_id;
+
+    private String first_name;
+    private String middle_name;
+    private String last_name;
+
+<span class="fc" id="L21">    public Author(String first_name, String last_name, String middle_name){</span>
+
+<span class="fc" id="L23">        this.first_name = first_name;</span>
+<span class="fc" id="L24">        this.last_name = last_name;</span>
+<span class="fc" id="L25">        this.middle_name = middle_name;</span>
+
+<span class="fc" id="L27">    }</span>
+<span class="fc" id="L28">    @ManyToMany(mappedBy = &quot;author&quot;, fetch = FetchType.LAZY)</span>
+    @JsonIgnore
+    private Set&lt;Books&gt; books = new HashSet&lt;&gt;();
+
+
+
+
+    public int getAuthor_id() {
+<span class="nc" id="L36">        return author_id;</span>
+    }
+
+    //needed to Many-to-Many mapping
+    public Set&lt;Books&gt; getBooks() {
+<span class="nc" id="L41">        return books;</span>
+    }
+    public void setBooks(Set&lt;Books&gt; books) {
+<span class="nc" id="L44">        this.books = books;</span>
+<span class="nc" id="L45">    }</span>
+
+
+    public void setFirst_name(String first_name) {
+<span class="fc" id="L49">        this.first_name = first_name;</span>
+<span class="fc" id="L50">    }</span>
+
+    public String getFirst_name() {
+<span class="fc" id="L53">        return first_name;</span>
+    }
+
+    public void setLast_name(String last_name) {
+<span class="nc" id="L57">        this.last_name= last_name;</span>
+<span class="nc" id="L58">    }</span>
+
+<span class="nc" id="L60">    public String getLast_name() { return last_name;</span>
+    }
+
+    public void setMiddle_name(String middle_name) {
+<span class="nc" id="L64">        this.middle_name = middle_name;</span>
+<span class="nc" id="L65">    }</span>
+
+    public String getMiddle_name() {
+<span class="nc" id="L68">        return middle_name;</span>
+    }
+<span class="fc" id="L70">    public Author(){</span>
+
+<span class="fc" id="L72">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

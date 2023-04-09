@@ -1,7 +1,7 @@
 package com.castellar.carlos.picon;
 
 import javax.persistence.*;
-import java.sql.Blob;
+
 
 @Entity
 @Table(name ="images")
@@ -9,26 +9,26 @@ public class Images {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int image_id;
-    @Lob
-    @Column(name = "image1", length = Integer.MAX_VALUE, nullable = true)
-    private byte[] image1;
+    private int images_id;
 
-    public Images(byte[] image1){
+    private String image1;
+
+
+    public Images(String image1){
 
         this.image1 = image1;
 
     }
     public int getImages_id() {
-        return image_id;
+        return images_id;
     }
 
 
-    public byte[] getImage1() {
+    public String getImage1() {
         return image1;
     }
 
-    public void setImage1(byte[] image1) {
+    public void setImage1(String image1) {
         this.image1 = image1;
     }
     public Images(){

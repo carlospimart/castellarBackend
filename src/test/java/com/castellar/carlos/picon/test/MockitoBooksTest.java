@@ -34,6 +34,8 @@ public class MockitoBooksTest {
     @Mock
     private LanguageRepository languageRepository;
     @Mock
+    private OrdersRepository ordersRepository;
+    @Mock
     private UsersRepository usersRepository;
 
 
@@ -47,7 +49,9 @@ public class MockitoBooksTest {
                 authorRepository,
                 imagesRepository,
                 languageRepository,
+                ordersRepository,
                 usersRepository
+
 
         );
     }

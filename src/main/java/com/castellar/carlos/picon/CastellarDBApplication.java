@@ -3,13 +3,17 @@ package com.castellar.carlos.picon;
 import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 @SpringBootApplication
+
 @RestController
 @RequestMapping("/Homepage")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -26,6 +30,8 @@ public class CastellarDBApplication {
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
+    private OrdersRepository ordersRepository;
+    @Autowired
     private UsersRepository usersRepository;
 
     private String save ="save";
@@ -34,6 +40,7 @@ public class CastellarDBApplication {
                                   AuthorRepository  authorRepository,
                                   ImagesRepository imagesRepository,
                                   LanguageRepository  languageRepository,
+                                  OrdersRepository ordersRepository,
                                   UsersRepository usersRepository){
 
 
@@ -42,6 +49,7 @@ public class CastellarDBApplication {
         this.authorRepository = authorRepository;
         this.imagesRepository = imagesRepository;
         this.languageRepository = languageRepository;
+        this.ordersRepository = ordersRepository;
         this.usersRepository = usersRepository;
 
     }
@@ -125,6 +133,11 @@ public class CastellarDBApplication {
         return booksRepository.findAll();
     }
 
+    @GetMapping("/SomeBooks")
+    List<Books> getBookssByTitlePiece(@RequestParam String title_piece) {
+        return booksRepository.findByTitleContainingIgnoreCase(title_piece);
+    }
+
     @DeleteMapping("/DeleteBooks/{book_id}")
     public @ResponseBody
     String removeBook(@PathVariable int book_id){
@@ -184,23 +197,41 @@ public class CastellarDBApplication {
         languageRepository.deleteById(language_id);
         return "The language was removed";
     }
+    /********************Orders**********************/
+    @GetMapping("/AllOrders")
+    public @ResponseBody
+    Iterable<Orders> getAllOrders(){
+        return ordersRepository.findAll();
+    }
 
+    @PostMapping("/AddOrders")
+    public @ResponseBody
+    String addOrders(@RequestParam String reference_number, String status, String purchase_date){
+        Orders addOrders = new Orders(reference_number, status, purchase_date);
+        ordersRepository.save(addOrders);
+        return save;
+    }
     /********************Users**********************/
     @PostMapping("/AddUsers")
-    public @ResponseBody
-    String addUser(@RequestParam String first_name, String last_name, String email,
-                   String gender, String dob, String username, String password, String city,
-                   String address, String post_code, String phone_number, boolean admin,
-                   String admin_password){
-        Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
-                                  city, address, post_code, phone_number,admin,admin_password);
-        usersRepository.save(addUser);
-        return save;
+        public @ResponseBody
+        String addUser(@RequestParam String first_name, String last_name, String email,
+                String gender, String dob, String username, String password, String city,
+                String address, String post_code, String phone_number, boolean admin,
+        String admin_password){
+            Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
+                    city, address, post_code, phone_number,admin,admin_password);
+            usersRepository.save(addUser);
+            return save;
     }
     @GetMapping("/AllUsers")
     public @ResponseBody
     Iterable<Users> getAllUsers(){
         return usersRepository.findAll();
+    }
+
+    @GetMapping("/SomeUsers/username") //method to get users by username
+    public ResponseEntity<List<Users>> getUserByName(@RequestParam String username){
+        return new ResponseEntity<List<Users>>(usersRepository.findByUsername(username), HttpStatus.OK);
     }
 
     @DeleteMapping("/DeleteUsers/{users_id}")

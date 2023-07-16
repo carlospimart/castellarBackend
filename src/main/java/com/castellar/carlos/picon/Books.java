@@ -21,14 +21,23 @@ public class Books {
     private String condition_book;
     private String plot;
     private String cover;
+    private int num_pag;
     private int language_id;
+    private int images_id;
+    private String availability;
 
     @ManyToOne
     @JoinColumn(name ="language_id", insertable = false, updatable = false)
     //@JsonIgnore
     private Language language;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "images_id", insertable = false, updatable = false)
+    private Images images;
+
     public Books(String title, int year ,float price, String description, String condition_book,
-                 String plot, String cover,  int language_id){
+                 String plot, String cover,int num_pag,  int language_id, int images_id,
+                 String availability){
 
         this.title = title;
         this.year = year;
@@ -37,8 +46,10 @@ public class Books {
         this.condition_book = condition_book;
         this.plot =plot;
         this.cover = cover;
+        this.num_pag = num_pag;
         this.language_id = language_id;
-
+        this.images_id = images_id;
+        this.availability = availability;
 
     }
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -134,6 +145,39 @@ public class Books {
        this.language = language;
 
    }
+
+    public int getImages_id() {
+        return images_id;
+    }
+
+    public void setImages_id(int images_id) {
+        this.images_id = images_id;
+    }
+
+    public Images getImages() {
+        return images;
+    }
+
+    public int getNum_pag() {
+        return num_pag;
+    }
+
+    public void setNum_pag(int num_pag) {
+        this.num_pag = num_pag;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
+    public void setImages(Images images) {
+        this.images = images;
+
+    }
     public Books(){
 
     }

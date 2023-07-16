@@ -3,6 +3,7 @@ package com.castellar.carlos.picon;
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
     @Entity
     @Table(name ="users")
@@ -52,7 +53,24 @@ import java.util.Set;
             this.admin_password = admin_password;
 
         }
+        @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+        @JoinTable(name = "users_has_orders",
+                joinColumns = {
+                        @JoinColumn(name = "users_id", referencedColumnName = "users_id",
+                                nullable = false, updatable = false)},
+                inverseJoinColumns = {
+                        @JoinColumn(name = "orders_id", referencedColumnName = "orders_id",
+                                nullable = false, updatable = false)})
+        private Set<Orders> orders = new HashSet<>();
 
+        public Set<Orders> getOrders() {
+
+            return orders;
+        }
+
+        public void setAuthor(Set<Orders> orders) {
+            this.orders = orders;
+        }
         public int getUsers_id() {
             return users_id;
         }

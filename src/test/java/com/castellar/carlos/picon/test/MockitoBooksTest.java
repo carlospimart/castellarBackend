@@ -37,6 +37,8 @@ public class MockitoBooksTest {
     private OrdersRepository ordersRepository;
     @Mock
     private UsersRepository usersRepository;
+    @Mock
+    private UsersHOrdersRepository usersHordersRepository;
 
 
     @BeforeEach
@@ -50,7 +52,9 @@ public class MockitoBooksTest {
                 imagesRepository,
                 languageRepository,
                 ordersRepository,
-                usersRepository
+                usersRepository,
+                usersHordersRepository
+
 
 
         );
@@ -88,10 +92,10 @@ public class MockitoBooksTest {
     @Test
     public void getGetMappingBooksTest() {
         Books testBook1 = new Books( "It", 1995, 4, "Best book ever", "Good",
-                "plot1", "paperback", 1);
+                "plot1", "paperback", 298, 1, 1, "in stock");
         Books testBook2 = new Books( "La Reina del Sur", 2007, 3, "A great book",
                 "Used","A drug dealer woman arrive to the south of Spain", "Hardcover",
-                 3);
+                 320, 3, 1, "in stock");
         List<Books> bookList = new ArrayList<>();
         bookList.add(testBook1);
         bookList.add(testBook2);

@@ -33,6 +33,8 @@ public class CastellarDBApplication {
     private OrdersRepository ordersRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private UsersHOrdersRepository usersHordersRepository;
 
     private String save ="save";
     public CastellarDBApplication(BooksRepository booksRepository,
@@ -41,7 +43,8 @@ public class CastellarDBApplication {
                                   ImagesRepository imagesRepository,
                                   LanguageRepository  languageRepository,
                                   OrdersRepository ordersRepository,
-                                  UsersRepository usersRepository){
+                                  UsersRepository usersRepository,
+                                  UsersHOrdersRepository usersHordersRepository){
 
 
         this.booksRepository = booksRepository;
@@ -51,6 +54,7 @@ public class CastellarDBApplication {
         this.languageRepository = languageRepository;
         this.ordersRepository = ordersRepository;
         this.usersRepository = usersRepository;
+        this.usersHordersRepository = usersHordersRepository;
 
     }
 
@@ -98,8 +102,12 @@ public class CastellarDBApplication {
     @PostMapping("/AddBooks")
     public @ResponseBody
     String addBook(@RequestParam  String title , int year, float price , String description,
-            String condition_book, String plot, String cover, int language_id, int author_id){
-        Books addBook = new Books(title, year, price, description, condition_book, plot, cover, language_id);
+            String condition_book, String plot, String cover, int num_pag, int language_id, int author_id, String image1,
+            String image2, String image3, String image4, String image5, String availability){
+        Images addImage = new Images(image1, image2, image3, image4, image5);
+        imagesRepository.save(addImage);
+        Books addBook = new Books(title, year, price, description, condition_book, plot, cover, num_pag, language_id,
+                                  addImage.getImages_id(), availability);
         booksRepository.save(addBook);
         Books_has_Author addBook_Author = new Books_has_Author(addBook.getBooks_id(), author_id);
         booksHauthorRepository.save(addBook_Author);
@@ -108,7 +116,8 @@ public class CastellarDBApplication {
     @PutMapping("/updateBooks/{books_id}")
     public @ResponseBody
     String updateBooks(@PathVariable int books_id, @RequestParam String title , int year, float price , String description,
-                      String condition_book, String plot, String cover, int language_id, int author_id){
+                       String condition_book, String plot, String cover, int num_pag, int language_id,
+                       int author_id, String availability){
         Books updateBooks = booksRepository.findById(books_id)
                 .orElseThrow(() ->new ResourceNotFoundException("Books ID not found"));
         Books_has_Author updateBook_Has_Author = booksHauthorRepository.findById(books_id)
@@ -120,7 +129,9 @@ public class CastellarDBApplication {
         updateBooks.setCondition(condition_book);
         updateBooks.setPlot(plot);
         updateBooks.setCover(cover);
+        updateBooks.setNum_pag(num_pag);
         updateBooks.setLanguage_id(language_id);
+        updateBooks.setAvailability(availability);
         updateBook_Has_Author.setAuthor_id(author_id);
         final Books_has_Author updatedBook_Has_Author = booksHauthorRepository.save(updateBook_Has_Author);
         final Books updatedBooks = booksRepository.save(updateBooks);
@@ -144,6 +155,7 @@ public class CastellarDBApplication {
         booksRepository.deleteById(book_id);
         return "The book was removed";
     }
+
     /********************Books_Has_Author**********************/
     @GetMapping("/AllBook_Author")
     public @ResponseBody
@@ -159,6 +171,14 @@ public class CastellarDBApplication {
         return save;
     }
     /********************Images****************************/
+    @PostMapping("/AddImages")
+    public @ResponseBody
+    String addImage(@RequestParam  String image1, String image2, String image3, String image4,
+                                   String image5){
+        Images addImage = new Images(image1, image2, image3, image4, image5);
+        imagesRepository.save(addImage);
+        return save;
+    }
     @GetMapping("/AllImages")
     public @ResponseBody
     Iterable<Images> getAllImages(){
@@ -190,7 +210,6 @@ public class CastellarDBApplication {
         final Language updatedLanguage = languageRepository.save(updateLanguage);
         return "Updated";
     }
-
     @DeleteMapping("/DeleteLanguages/{language_id}")
     public @ResponseBody
     String removeLanguage(@PathVariable int language_id){
@@ -206,10 +225,25 @@ public class CastellarDBApplication {
 
     @PostMapping("/AddOrders")
     public @ResponseBody
-    String addOrders(@RequestParam String reference_number, String status, String purchase_date){
-        Orders addOrders = new Orders(reference_number, status, purchase_date);
+    String addOrders(@RequestParam String reference_number, String status, String purchase_date,
+                                   int users_id, float price_total, int quantity, float shipping_cost) {
+        Orders addOrders = new Orders(reference_number, status, purchase_date, users_id,
+
+                               price_total, quantity, shipping_cost);
         ordersRepository.save(addOrders);
+        Users_has_Orders addUsers_Orders = new Users_has_Orders(addOrders.getOrders_id(), users_id);
+        usersHordersRepository.save(addUsers_Orders);
         return save;
+    }
+
+    @PutMapping("/updateOrder/{orders_id}")
+    public @ResponseBody
+    String updateOrder(@PathVariable int orders_id, @RequestParam String status){
+        Orders updateOrder = ordersRepository.findById(orders_id)
+                .orElseThrow(() ->new ResourceNotFoundException("ID not fund"));
+        updateOrder.setStatus(status);
+        final Orders updatedOrder = ordersRepository.save(updateOrder);
+        return "Updated";
     }
     /********************Users**********************/
     @PostMapping("/AddUsers")
@@ -217,10 +251,11 @@ public class CastellarDBApplication {
         String addUser(@RequestParam String first_name, String last_name, String email,
                 String gender, String dob, String username, String password, String city,
                 String address, String post_code, String phone_number, boolean admin,
-        String admin_password){
+                String admin_password){
             Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
                     city, address, post_code, phone_number,admin,admin_password);
             usersRepository.save(addUser);
+
             return save;
     }
     @GetMapping("/AllUsers")
@@ -263,5 +298,20 @@ public class CastellarDBApplication {
         updateUser.setAdmin_password(admin_password);
         final Users updatedUser = usersRepository.save(updateUser);
         return "Updated";
+    }
+    @GetMapping("/UsersByID/{users_id}")
+    public @ResponseBody
+    Optional<Users> getUsersByID(@PathVariable int users_id){
+
+        return usersRepository.findById(users_id);
+    }
+    /********************Users_Has_Orders**********************/
+    @PostMapping("/AddUsers_Has_Order")
+    public @ResponseBody
+    String addUser_Order(@RequestParam int orders_id, int users_id){
+
+        Users_has_Orders addUser_Order = new Users_has_Orders(orders_id, users_id);
+        usersHordersRepository.save(addUser_Order);
+        return save;
     }
 }

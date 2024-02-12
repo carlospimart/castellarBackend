@@ -15,17 +15,19 @@ public class Orders {
     private String purchase_date;
     private int users_id;
     private float price_total;
+    private float price_items;
     private int quantity;
     private float shipping_cost;
 
     public Orders(String reference_number,String status, String date, int users_id,
-                  float price_total, int quantity, float shipping_cost){
+                  float price_total, float price_items, int quantity, float shipping_cost){
 
         this.reference_number = reference_number;
         this.status = status;
         this.purchase_date = date;
         this.users_id = users_id;
         this.price_total = price_total;
+        this.price_items = price_items;
         this.quantity = quantity;
         this.shipping_cost = shipping_cost;
     }
@@ -44,6 +46,14 @@ public class Orders {
 
     public void setPrice_total(float price_total) {
         this.price_total = price_total;
+    }
+
+    public float getPrice_items() {
+        return price_items;
+    }
+
+    public void setPrice_items(float price_items) {
+        this.price_items = price_items;
     }
 
     public int getQuantity() {

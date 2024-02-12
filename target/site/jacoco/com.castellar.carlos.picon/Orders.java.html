@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Orders.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CatellarDatabase</a> &gt; <a href="index.source.html" class="el_package">com.castellar.carlos.picon</a> &gt; <span class="el_source">Orders.java</span></div><h1>Orders.java</h1><pre class="source lang-java linenums">package com.castellar.carlos.picon;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name =&quot;orders&quot;)
+public class Orders {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private int orders_id;
+    private String reference_number;
+    private String status;
+    private String purchase_date;
+    private int users_id;
+    private float price_total;
+    private float price_items;
+    private int quantity;
+    private float shipping_cost;
+
+    public Orders(String reference_number,String status, String date, int users_id,
+<span class="nc" id="L23">                  float price_total, float price_items, int quantity, float shipping_cost){</span>
+
+<span class="nc" id="L25">        this.reference_number = reference_number;</span>
+<span class="nc" id="L26">        this.status = status;</span>
+<span class="nc" id="L27">        this.purchase_date = date;</span>
+<span class="nc" id="L28">        this.users_id = users_id;</span>
+<span class="nc" id="L29">        this.price_total = price_total;</span>
+<span class="nc" id="L30">        this.price_items = price_items;</span>
+<span class="nc" id="L31">        this.quantity = quantity;</span>
+<span class="nc" id="L32">        this.shipping_cost = shipping_cost;</span>
+<span class="nc" id="L33">    }</span>
+
+    public int getOrders_id() {
+<span class="nc" id="L36">        return orders_id;</span>
+    }
+
+    public void setReference_number(String reference_number) {
+<span class="nc" id="L40">        this.reference_number = reference_number;</span>
+<span class="nc" id="L41">    }</span>
+
+    public float getPrice_total() {
+<span class="nc" id="L44">        return price_total;</span>
+    }
+
+    public void setPrice_total(float price_total) {
+<span class="nc" id="L48">        this.price_total = price_total;</span>
+<span class="nc" id="L49">    }</span>
+
+    public float getPrice_items() {
+<span class="nc" id="L52">        return price_items;</span>
+    }
+
+    public void setPrice_items(float price_items) {
+<span class="nc" id="L56">        this.price_items = price_items;</span>
+<span class="nc" id="L57">    }</span>
+
+    public int getQuantity() {
+<span class="nc" id="L60">        return quantity;</span>
+    }
+
+    public void setQuantity(int quantity) {
+<span class="nc" id="L64">        this.quantity = quantity;</span>
+<span class="nc" id="L65">    }</span>
+
+    public float getShipping_cost() {
+<span class="nc" id="L68">        return shipping_cost;</span>
+    }
+
+    public void setShipping_cost(float shipping_cost) {
+<span class="nc" id="L72">        this.shipping_cost = shipping_cost;</span>
+<span class="nc" id="L73">    }</span>
+
+    public String getReference_number() {
+<span class="nc" id="L76">        return reference_number;</span>
+    }
+
+    public void setStatus(String status) {
+<span class="nc" id="L80">        this.status = status;</span>
+<span class="nc" id="L81">    }</span>
+
+    public String getStatus() {
+<span class="nc" id="L84">        return status;</span>
+    }
+
+    public void setPurchase_date(String purchase_date) {
+<span class="nc" id="L88">        this.purchase_date = purchase_date;</span>
+<span class="nc" id="L89">    }</span>
+
+    public String getPurchase_date() {
+<span class="nc" id="L92">        return purchase_date;</span>
+    }
+
+    public int getUsers_id() {
+<span class="nc" id="L96">        return users_id;</span>
+    }
+
+    public void setUsers_id(int users_id) {
+<span class="nc" id="L100">        this.users_id = users_id;</span>
+<span class="nc" id="L101">    }</span>
+
+<span class="nc" id="L103">    public Orders(){</span>
+
+<span class="nc" id="L105">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

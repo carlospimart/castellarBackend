@@ -17,15 +17,17 @@ public class Author {
     private String first_name;
     private String middle_name;
     private String last_name;
+    private String country;
 
-<span class="fc" id="L21">    public Author(String first_name, String last_name, String middle_name){</span>
 
-<span class="fc" id="L23">        this.first_name = first_name;</span>
-<span class="fc" id="L24">        this.last_name = last_name;</span>
-<span class="fc" id="L25">        this.middle_name = middle_name;</span>
+<span class="fc" id="L23">    public Author(String first_name, String middle_name, String last_name, String country){</span>
 
-<span class="fc" id="L27">    }</span>
-<span class="fc" id="L28">    @ManyToMany(mappedBy = &quot;author&quot;, fetch = FetchType.LAZY)</span>
+<span class="fc" id="L25">        this.first_name = first_name;</span>
+<span class="fc" id="L26">        this.middle_name = middle_name;</span>
+<span class="fc" id="L27">        this.last_name = last_name;</span>
+<span class="fc" id="L28">        this.country = country;</span>
+<span class="fc" id="L29">    }</span>
+<span class="fc" id="L30">    @ManyToMany(mappedBy = &quot;author&quot;, fetch = FetchType.LAZY)</span>
     @JsonIgnore
     private Set&lt;Books&gt; books = new HashSet&lt;&gt;();
 
@@ -33,42 +35,49 @@ public class Author {
 
 
     public int getAuthor_id() {
-<span class="nc" id="L36">        return author_id;</span>
+<span class="nc" id="L38">        return author_id;</span>
     }
 
     //needed to Many-to-Many mapping
     public Set&lt;Books&gt; getBooks() {
-<span class="nc" id="L41">        return books;</span>
+<span class="nc" id="L43">        return books;</span>
     }
     public void setBooks(Set&lt;Books&gt; books) {
-<span class="nc" id="L44">        this.books = books;</span>
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L46">        this.books = books;</span>
+<span class="nc" id="L47">    }</span>
 
 
     public void setFirst_name(String first_name) {
-<span class="fc" id="L49">        this.first_name = first_name;</span>
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L51">        this.first_name = first_name;</span>
+<span class="fc" id="L52">    }</span>
 
     public String getFirst_name() {
-<span class="fc" id="L53">        return first_name;</span>
+<span class="fc" id="L55">        return first_name;</span>
     }
 
     public void setLast_name(String last_name) {
-<span class="nc" id="L57">        this.last_name= last_name;</span>
-<span class="nc" id="L58">    }</span>
+<span class="nc" id="L59">        this.last_name= last_name;</span>
+<span class="nc" id="L60">    }</span>
 
-<span class="nc" id="L60">    public String getLast_name() { return last_name;</span>
+<span class="nc" id="L62">    public String getLast_name() { return last_name;</span>
     }
 
     public void setMiddle_name(String middle_name) {
-<span class="nc" id="L64">        this.middle_name = middle_name;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L66">        this.middle_name = middle_name;</span>
+<span class="nc" id="L67">    }</span>
 
     public String getMiddle_name() {
-<span class="nc" id="L68">        return middle_name;</span>
+<span class="nc" id="L70">        return middle_name;</span>
     }
-<span class="fc" id="L70">    public Author(){</span>
+    public void setCountry(String country) {
+<span class="nc" id="L73">        this.country = country;</span>
+<span class="nc" id="L74">    }</span>
 
-<span class="fc" id="L72">    }</span>
+    public String getCountry() {
+<span class="nc" id="L77">        return country;</span>
+    }
+<span class="fc" id="L79">    public Author(){</span>
+
+<span class="fc" id="L81">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

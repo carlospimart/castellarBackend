@@ -13,10 +13,10 @@ public class Language{
         private int language_id;
 
         //Setting up many to many with language category
-       /* @OneToMany
+        /*@OneToMany
         @JoinColumn(name =&quot;language_id&quot;,insertable = false,updatable = false)
-        @JsonIgnore
-        private Set&lt;Film&gt; film;*/
+        //@JsonIgnore
+        private Set&lt;Books&gt; books;*/
 
         private String name;
 
@@ -38,17 +38,18 @@ public class Language{
 <span class="nc" id="L38">            return name;</span>
         }
 
-        /*public Set&lt;Film&gt;getFilm(){
-            return film;
+        /*public Set&lt;Books&gt;getBook(){
+            return books;
         }
 
-        public void setFilm(Set&lt;Film&gt; film) {
-            this.film = film;
+        public void setBook(Set&lt;Books&gt; books) {
+            this.books = books;
         }*/
 <span class="nc" id="L48">        public Language(){</span>
 
-<span class="nc" id="L50">        }</span>
-    }
+
+<span class="nc" id="L51">        }</span>
+}
 
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

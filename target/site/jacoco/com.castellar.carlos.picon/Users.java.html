@@ -3,6 +3,7 @@
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
     @Entity
     @Table(name =&quot;users&quot;)
@@ -36,140 +37,150 @@ import java.util.Set;
         public Users(String first_name, String last_name, String gender,
                      String dob,String email, String username, String password,
                      String city, String address, String post_code, String phone_number,
-<span class="nc" id="L39">                     boolean admin, String admin_password){</span>
-<span class="nc" id="L40">            this.first_name = first_name;</span>
-<span class="nc" id="L41">            this.last_name = last_name;</span>
-<span class="nc" id="L42">            this.gender = gender;</span>
-<span class="nc" id="L43">            this.dob = dob;</span>
-<span class="nc" id="L44">            this.email = email;</span>
-<span class="nc" id="L45">            this.username = username;</span>
-<span class="nc" id="L46">            this.password = password;</span>
-<span class="nc" id="L47">            this.city = city;</span>
-<span class="nc" id="L48">            this.address = address;</span>
-<span class="nc" id="L49">            this.post_code = post_code;</span>
-<span class="nc" id="L50">            this.phone_number = phone_number;</span>
-<span class="nc" id="L51">            this.admin = admin;</span>
-<span class="nc" id="L52">            this.admin_password = admin_password;</span>
+<span class="nc" id="L40">                     boolean admin, String admin_password){</span>
+<span class="nc" id="L41">            this.first_name = first_name;</span>
+<span class="nc" id="L42">            this.last_name = last_name;</span>
+<span class="nc" id="L43">            this.gender = gender;</span>
+<span class="nc" id="L44">            this.dob = dob;</span>
+<span class="nc" id="L45">            this.email = email;</span>
+<span class="nc" id="L46">            this.username = username;</span>
+<span class="nc" id="L47">            this.password = password;</span>
+<span class="nc" id="L48">            this.city = city;</span>
+<span class="nc" id="L49">            this.address = address;</span>
+<span class="nc" id="L50">            this.post_code = post_code;</span>
+<span class="nc" id="L51">            this.phone_number = phone_number;</span>
+<span class="nc" id="L52">            this.admin = admin;</span>
+<span class="nc" id="L53">            this.admin_password = admin_password;</span>
 
-<span class="nc" id="L54">        }</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc" id="L56">        @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)</span>
+        @JoinTable(name = &quot;users_has_orders&quot;,
+                joinColumns = {
+                        @JoinColumn(name = &quot;users_id&quot;, referencedColumnName = &quot;users_id&quot;,
+                                nullable = false, updatable = false)},
+                inverseJoinColumns = {
+                        @JoinColumn(name = &quot;orders_id&quot;, referencedColumnName = &quot;orders_id&quot;,
+                                nullable = false, updatable = false)})
+        private Set&lt;Orders&gt; orders = new HashSet&lt;&gt;();
 
+        public Set&lt;Orders&gt; getOrders() {
+
+<span class="nc" id="L68">            return orders;</span>
+        }
+
+        public void setAuthor(Set&lt;Orders&gt; orders) {
+<span class="nc" id="L72">            this.orders = orders;</span>
+<span class="nc" id="L73">        }</span>
         public int getUsers_id() {
-<span class="nc" id="L57">            return users_id;</span>
+<span class="nc" id="L75">            return users_id;</span>
         }
         public void setFirst_name(String first_name) {
-<span class="nc" id="L60">            this.first_name = first_name;</span>
-<span class="nc" id="L61">        }</span>
+<span class="nc" id="L78">            this.first_name = first_name;</span>
+<span class="nc" id="L79">        }</span>
 
         public String getFirst_name() {
-<span class="nc" id="L64">            return first_name;</span>
+<span class="nc" id="L82">            return first_name;</span>
         }
 
         public void setLast_name(String last_name) {
-<span class="nc" id="L68">            this.last_name = last_name;</span>
-<span class="nc" id="L69">        }</span>
+<span class="nc" id="L86">            this.last_name = last_name;</span>
+<span class="nc" id="L87">        }</span>
 
         public String getLast_name() {
-<span class="nc" id="L72">            return last_name;</span>
+<span class="nc" id="L90">            return last_name;</span>
         }
 
         public void setGender(String Gender) {
-<span class="nc" id="L76">            this.gender = gender;</span>
-<span class="nc" id="L77">        }</span>
+<span class="nc" id="L94">            this.gender = gender;</span>
+<span class="nc" id="L95">        }</span>
 
         public String getGender() {
-<span class="nc" id="L80">            return gender;</span>
+<span class="nc" id="L98">            return gender;</span>
         }
 
         public void setDob(String dob) {
-<span class="nc" id="L84">            this.dob = dob;</span>
-<span class="nc" id="L85">        }</span>
+<span class="nc" id="L102">            this.dob = dob;</span>
+<span class="nc" id="L103">        }</span>
 
         public String getDob() {
-<span class="nc" id="L88">            return dob;</span>
+<span class="nc" id="L106">            return dob;</span>
         }
 
         public void setEmail(String email) {
-<span class="nc" id="L92">            this.email = email;</span>
-<span class="nc" id="L93">        }</span>
+<span class="nc" id="L110">            this.email = email;</span>
+<span class="nc" id="L111">        }</span>
 
         public String getEmail() {
-<span class="nc" id="L96">            return email;</span>
+<span class="nc" id="L114">            return email;</span>
         }
 
         public void setUsername(String username) {
-<span class="nc" id="L100">            this.username = username;</span>
-<span class="nc" id="L101">        }</span>
+<span class="nc" id="L118">            this.username = username;</span>
+<span class="nc" id="L119">        }</span>
 
         public String getUsername() {
-<span class="nc" id="L104">            return username;</span>
+<span class="nc" id="L122">            return username;</span>
         }
 
         public void setPassword(String password) {
-<span class="nc" id="L108">            this.password = password;</span>
-<span class="nc" id="L109">        }</span>
+<span class="nc" id="L126">            this.password = password;</span>
+<span class="nc" id="L127">        }</span>
 
         public String getPassword() {
-<span class="nc" id="L112">            return password;</span>
+<span class="nc" id="L130">            return password;</span>
         }
 
         public void setCity(String city) {
-<span class="nc" id="L116">            this.city = city;</span>
-<span class="nc" id="L117">        }</span>
+<span class="nc" id="L134">            this.city = city;</span>
+<span class="nc" id="L135">        }</span>
 
         public String getCity() {
-<span class="nc" id="L120">            return city;</span>
+<span class="nc" id="L138">            return city;</span>
         }
 
         public void setAddress(String address) {
-<span class="nc" id="L124">            this.address = address;</span>
-<span class="nc" id="L125">        }</span>
+<span class="nc" id="L142">            this.address = address;</span>
+<span class="nc" id="L143">        }</span>
 
         public String getAddress() {
-<span class="nc" id="L128">            return address;</span>
+<span class="nc" id="L146">            return address;</span>
         }
 
         public void setPost_code(String post_code) {
-<span class="nc" id="L132">            this.post_code = post_code;</span>
-<span class="nc" id="L133">        }</span>
+<span class="nc" id="L150">            this.post_code = post_code;</span>
+<span class="nc" id="L151">        }</span>
 
         public String getPost_code() {
-<span class="nc" id="L136">            return post_code;</span>
+<span class="nc" id="L154">            return post_code;</span>
         }
 
         public void setPhone_number(String phone_number) {
-<span class="nc" id="L140">            this.phone_number = phone_number;</span>
-<span class="nc" id="L141">        }</span>
+<span class="nc" id="L158">            this.phone_number = phone_number;</span>
+<span class="nc" id="L159">        }</span>
 
         public String getPhone_number() {
-<span class="nc" id="L144">            return phone_number;</span>
+<span class="nc" id="L162">            return phone_number;</span>
         }
 
         public void setAdmin(boolean admin) {
-<span class="nc" id="L148">            this.admin = admin;</span>
-<span class="nc" id="L149">        }</span>
+<span class="nc" id="L166">            this.admin = admin;</span>
+<span class="nc" id="L167">        }</span>
 
         public boolean getAdmin() {
-<span class="nc" id="L152">            return admin;</span>
+<span class="nc" id="L170">            return admin;</span>
         }
 
         public void setAdmin_password(String admin_password) {
-<span class="nc" id="L156">            this.admin_password = admin_password;</span>
-<span class="nc" id="L157">        }</span>
+<span class="nc" id="L174">            this.admin_password = admin_password;</span>
+<span class="nc" id="L175">        }</span>
 
         public String getAdmin_password() {
-<span class="nc" id="L160">            return admin_password;</span>
+<span class="nc" id="L178">            return admin_password;</span>
         }
 
-        /*public Set&lt;Film&gt;getFilm(){
-            return film;
-        }
+<span class="nc" id="L181">        public Users(){</span>
 
-        public void setFilm(Set&lt;Film&gt; film) {
-            this.film = film;
-        }*/
-<span class="nc" id="L170">        public Users(){</span>
-
-<span class="nc" id="L172">        }</span>
+<span class="nc" id="L183">        }</span>
     }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,50 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Books.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CatellarDatabase</a> &gt; <a href="index.source.html" class="el_package">com.castellar.carlos.picon</a> &gt; <span class="el_source">Books.java</span></div><h1>Books.java</h1><pre class="source lang-java linenums">package com.castellar.carlos.picon;
 
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Table(name =&quot;books&quot;)
 @Entity
 public class Books {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int books_id;
 
-    private int year;
-    private int language_id;
     private String title;
+    private int year;
     private float price;
-    private String condition;
+    private String description;
+    private String condition_book;
     private String plot;
+    private String cover;
+    private int num_pag;
+    private int language_id;
+    private int images_id;
+    private String availability;
 
     @ManyToOne
     @JoinColumn(name =&quot;language_id&quot;, insertable = false, updatable = false)
+    //@JsonIgnore
     private Language language;
-    public Books(String title, int year, int language_id, float price, String condition,
-<span class="fc" id="L29">                 String plot){</span>
 
-<span class="fc" id="L31">        this.title = title;</span>
-<span class="fc" id="L32">        this.year = year;</span>
-<span class="fc" id="L33">        this.language_id = language_id;</span>
-<span class="fc" id="L34">        this.price = price;</span>
-<span class="fc" id="L35">        this.condition = condition;</span>
-<span class="fc" id="L36">        this.plot =plot;</span>
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = &quot;images_id&quot;, insertable = false, updatable = false)
+    private Images images;
 
-<span class="fc" id="L38">    }</span>
+    public Books(String title, int year ,float price, String description, String condition_book,
+                 String plot, String cover,int num_pag,  int language_id, int images_id,
+<span class="fc" id="L40">                 String availability){</span>
 
-    public Language getLanguage() {
-<span class="nc" id="L41">        return language;</span>
-    }
+<span class="fc" id="L42">        this.title = title;</span>
+<span class="fc" id="L43">        this.year = year;</span>
+<span class="fc" id="L44">        this.price = price;</span>
+<span class="fc" id="L45">        this.description = description;</span>
+<span class="fc" id="L46">        this.condition_book = condition_book;</span>
+<span class="fc" id="L47">        this.plot =plot;</span>
+<span class="fc" id="L48">        this.cover = cover;</span>
+<span class="fc" id="L49">        this.num_pag = num_pag;</span>
+<span class="fc" id="L50">        this.language_id = language_id;</span>
+<span class="fc" id="L51">        this.images_id = images_id;</span>
+<span class="fc" id="L52">        this.availability = availability;</span>
 
-    public void setLanguage(Language language) {
-<span class="nc" id="L45">        this.language = language;</span>
-<span class="nc" id="L46">    }</span>
-<span class="fc" id="L47">    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)</span>
+<span class="fc" id="L54">    }</span>
+<span class="fc" id="L55">    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)</span>
     @JoinTable(name = &quot;books_has_author&quot;,
             joinColumns = {
                     @JoinColumn(name = &quot;books_id&quot;, referencedColumnName = &quot;books_id&quot;,
@@ -56,69 +64,123 @@ public class Books {
 
     public Set&lt;Author&gt; getAuthor() {
 
-<span class="nc" id="L59">        return author;</span>
+<span class="nc" id="L67">        return author;</span>
     }
 
     public void setAuthor(Set&lt;Author&gt; author) {
-<span class="nc" id="L63">        this.author = author;</span>
-<span class="nc" id="L64">    }</span>
+<span class="nc" id="L71">        this.author = author;</span>
+<span class="nc" id="L72">    }</span>
 
 
 
     public int getBooks_id() {
-<span class="nc" id="L69">        return books_id;</span>
+<span class="nc" id="L77">        return books_id;</span>
     }
 
     public void setTitle(String title) {
-<span class="fc" id="L73">        this.title = title;</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L81">        this.title = title;</span>
+<span class="fc" id="L82">    }</span>
 
     public String getTitle() {
-<span class="fc" id="L77">        return title;</span>
+<span class="fc" id="L85">        return title;</span>
     }
 
     public void setYear(int year) {
-<span class="nc" id="L81">        this.year = year;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L89">        this.year = year;</span>
+<span class="nc" id="L90">    }</span>
 
     public int getYear() {
-<span class="fc" id="L85">        return year;</span>
+<span class="nc" id="L93">        return year;</span>
     }
-
 
 
     public void setPrice(float price) {
-<span class="nc" id="L91">        this.price = price;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L98">       this.price = price;</span>
+<span class="nc" id="L99">   }</span>
 
-    public float getPrice() {
-<span class="fc" id="L95">        return price;</span>
+   public float getPrice() {
+<span class="nc" id="L102">       return price;</span>
+   }
+    public void setDescription(String description) {
+<span class="nc" id="L105">        this.description = description;</span>
+<span class="nc" id="L106">    }</span>
+    public String getDescription() {
+<span class="nc" id="L108">        return description;</span>
+    }
+   public void setCondition(String condition_book) {
+<span class="nc" id="L111">       this.condition_book = condition_book;</span>
+<span class="nc" id="L112">   }</span>
+
+   public String getCondition() {
+<span class="nc" id="L115">       return condition_book;</span>
+   }
+
+   public void setPlot(String plot) {
+<span class="nc" id="L119">       this.plot = plot;</span>
+<span class="nc" id="L120">   }</span>
+
+   public String getPlot() {
+<span class="nc" id="L123">       return plot;</span>
+   }
+
+   public void setCover(String cover) {
+<span class="nc" id="L127">       this.cover = cover;</span>
+<span class="nc" id="L128">   }</span>
+   public String getCover() {
+<span class="nc" id="L130">       return cover;</span>
+   }
+
+   public int getLanguage_id() {
+<span class="nc" id="L134">       return language_id;</span>
+   }
+
+   public void setLanguage_id(int language_id) {
+<span class="nc" id="L138">        this.language_id = language_id;</span>
+<span class="nc" id="L139">    }</span>
+   public Language getLanguage() {
+<span class="nc" id="L141">       return language;</span>
+   }
+
+   public void setLanguage(Language language) {
+<span class="nc" id="L145">       this.language = language;</span>
+
+<span class="nc" id="L147">   }</span>
+
+    public int getImages_id() {
+<span class="nc" id="L150">        return images_id;</span>
     }
 
-    public void setCondition(String condition) {
-<span class="nc" id="L99">        this.condition = condition;</span>
-<span class="nc" id="L100">    }</span>
+    public void setImages_id(int images_id) {
+<span class="nc" id="L154">        this.images_id = images_id;</span>
+<span class="nc" id="L155">    }</span>
 
-    public String getCondition() {
-<span class="fc" id="L103">        return condition;</span>
+    public Images getImages() {
+<span class="nc" id="L158">        return images;</span>
     }
 
-    public void setPlot(String plot) {
-<span class="nc" id="L107">        this.plot = plot;</span>
-<span class="nc" id="L108">    }</span>
-
-    public String getPlot() {
-<span class="fc" id="L111">        return plot;</span>
+    public int getNum_pag() {
+<span class="nc" id="L162">        return num_pag;</span>
     }
-    public void setLanguage_id(int language_id) {
-<span class="nc" id="L114">        this.language_id = language_id;</span>
-<span class="nc" id="L115">    }</span>
-    public int getLanguage_id() {
-<span class="fc" id="L117">        return language_id;</span>
-    }
-<span class="fc" id="L119">    public Books(){</span>
 
-<span class="fc" id="L121">    }</span>
+    public void setNum_pag(int num_pag) {
+<span class="nc" id="L166">        this.num_pag = num_pag;</span>
+<span class="nc" id="L167">    }</span>
+
+    public String getAvailability() {
+<span class="nc" id="L170">        return availability;</span>
+    }
+
+    public void setAvailability(String availability) {
+<span class="nc" id="L174">        this.availability = availability;</span>
+<span class="nc" id="L175">    }</span>
+
+    public void setImages(Images images) {
+<span class="nc" id="L178">        this.images = images;</span>
+
+<span class="nc" id="L180">    }</span>
+<span class="fc" id="L181">    public Books(){</span>
+
+<span class="fc" id="L183">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

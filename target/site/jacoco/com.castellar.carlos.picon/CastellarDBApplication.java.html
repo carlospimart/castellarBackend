@@ -3,128 +3,278 @@
 import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.List;
 @SpringBootApplication
+
 @RestController
 @RequestMapping(&quot;/Homepage&quot;)
-@CrossOrigin(origins = &quot;http://localhost:3000&quot;)
+
+@CrossOrigin(origins = {&quot;http://localhost:3000&quot;, &quot;http://castellar09dec23.s3-website.eu-west-2.amazonaws.com&quot;})
 public class CastellarDBApplication {
 
     @Autowired
     private BooksRepository booksRepository;
     @Autowired
+    private BooksHAuthorRepository booksHauthorRepository;
+    @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private ImagesRepository imagesRepository;
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
+    private OrdersRepository ordersRepository;
+    @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private UsersHOrdersRepository usersHordersRepository;
 
-<span class="fc" id="L26">    private String save =&quot;save&quot;;</span>
+<span class="fc" id="L40">    private String save =&quot;save&quot;;</span>
     public CastellarDBApplication(BooksRepository booksRepository,
+                                  BooksHAuthorRepository booksHauthorRepository,
                                   AuthorRepository  authorRepository,
+                                  ImagesRepository imagesRepository,
                                   LanguageRepository  languageRepository,
-<span class="fc" id="L30">                                  UsersRepository usersRepository){</span>
+                                  OrdersRepository ordersRepository,
+                                  UsersRepository usersRepository,
+<span class="fc" id="L48">                                  UsersHOrdersRepository usersHordersRepository){</span>
 
 
-<span class="fc" id="L33">        this.booksRepository = booksRepository;</span>
-<span class="fc" id="L34">        this.authorRepository = authorRepository;</span>
-<span class="fc" id="L35">        this.languageRepository = languageRepository;</span>
-<span class="fc" id="L36">        this.usersRepository = usersRepository;</span>
+<span class="fc" id="L51">        this.booksRepository = booksRepository;</span>
+<span class="fc" id="L52">        this.booksHauthorRepository = booksHauthorRepository;</span>
+<span class="fc" id="L53">        this.authorRepository = authorRepository;</span>
+<span class="fc" id="L54">        this.imagesRepository = imagesRepository;</span>
+<span class="fc" id="L55">        this.languageRepository = languageRepository;</span>
+<span class="fc" id="L56">        this.ordersRepository = ordersRepository;</span>
+<span class="fc" id="L57">        this.usersRepository = usersRepository;</span>
+<span class="fc" id="L58">        this.usersHordersRepository = usersHordersRepository;</span>
 
-
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L60">    }</span>
 
     public static void main(String[] args) {
 
 
-<span class="nc" id="L44">        SpringApplication.run(CastellarDBApplication.class, args);</span>
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L65">        SpringApplication.run(CastellarDBApplication.class, args);</span>
+<span class="nc" id="L66">    }</span>
 
     /********************Author**********************/
+    @PostMapping(&quot;/AddAuthors&quot;)
+    public @ResponseBody
+    String addAuthor(@RequestParam  String first_name, String middle_name, String last_name, String country){
+<span class="nc" id="L72">        Author addAuthor = new Author (first_name, middle_name, last_name, country);</span>
+<span class="nc" id="L73">        authorRepository.save(addAuthor);</span>
+<span class="nc" id="L74">        return save;</span>
+    }
     @GetMapping(&quot;/AllAuthor&quot;)
     public @ResponseBody
     Iterable&lt;Author&gt; getAllAuthor(){
-<span class="fc" id="L51">        return authorRepository.findAll();</span>
+<span class="fc" id="L79">        return authorRepository.findAll();</span>
     }
 
+    @DeleteMapping(&quot;/DeleteAuthors/{author_id}&quot;)
+    public @ResponseBody
+    String removeAuthors(@PathVariable int author_id){
+<span class="nc" id="L85">        authorRepository.deleteById(author_id);</span>
+<span class="nc" id="L86">        return &quot;The author was removed&quot;;</span>
+    }
+    @CrossOrigin(origins = {&quot;http://localhost:3000&quot;, &quot;http://castellar09dec23.s3-website.eu-west-2.amazonaws.com&quot;})
+    //@CrossOrigin(origins = &quot;http://castellar09dec23.s3-website.eu-west-2.amazonaws.com&quot;)
+    @PutMapping(&quot;/updateAuthors/{author_id}&quot;)
+    public @ResponseBody
+    String updateAuthor(@PathVariable int author_id, @RequestParam  String first_name, 
+                        String middle_name, String last_name, String country){
+<span class="nc" id="L94">        Author updateAuthor = authorRepository.findById(author_id)</span>
+<span class="nc" id="L95">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;Author ID not found&quot;));</span>
+<span class="nc" id="L96">        updateAuthor.setFirst_name(first_name);</span>
+<span class="nc" id="L97">        updateAuthor.setMiddle_name(middle_name);</span>
+<span class="nc" id="L98">        updateAuthor.setLast_name(last_name);</span>
+<span class="nc" id="L99">        updateAuthor.setCountry(country);</span>
+<span class="nc" id="L100">        final Author updatedAuthor = authorRepository.save(updateAuthor);</span>
+<span class="nc" id="L101">        return &quot;Updated&quot;;</span>
+    }
     /********************Books**********************/
-
     @PostMapping(&quot;/AddBooks&quot;)
     public @ResponseBody
-    String addBook(@RequestParam  String title, int year, int language_id, float price,
-                   String condition, String plot){
-<span class="fc" id="L60">        Books addBook = new Books(title, year, language_id, price, condition, plot);</span>
-<span class="fc" id="L61">        booksRepository.save(addBook);</span>
-<span class="fc" id="L62">        return save;</span>
+    String addBook(@RequestParam  String title , int year, float price , String description,
+            String condition_book, String plot, String cover, int num_pag, int language_id, int author_id, String image1,
+            String image2, String image3, String image4, String image5, String availability){
+<span class="nc" id="L109">        Images addImage = new Images(image1, image2, image3, image4, image5);</span>
+<span class="nc" id="L110">        imagesRepository.save(addImage);</span>
+<span class="nc" id="L111">        Books addBook = new Books(title, year, price, description, condition_book, plot, cover, num_pag, language_id,</span>
+<span class="nc" id="L112">                                  addImage.getImages_id(), availability);</span>
+<span class="nc" id="L113">        booksRepository.save(addBook);</span>
+<span class="nc" id="L114">        Books_has_Author addBook_Author = new Books_has_Author(addBook.getBooks_id(), author_id);</span>
+<span class="nc" id="L115">        booksHauthorRepository.save(addBook_Author);</span>
+<span class="nc" id="L116">        return save;</span>
     }
+    @PutMapping(&quot;/updateBooks/{books_id}&quot;)
+    public @ResponseBody
+    String updateBooks(@PathVariable int books_id, @RequestParam String title , int year, float price , String description,
+                       String condition_book, String plot, String cover, int num_pag, int language_id,
+                       int author_id, String availability){
+<span class="nc" id="L123">        Books updateBooks = booksRepository.findById(books_id)</span>
+<span class="nc" id="L124">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;Books ID not found&quot;));</span>
+<span class="nc" id="L125">        Books_has_Author updateBook_Has_Author = booksHauthorRepository.findById(books_id)</span>
+<span class="nc" id="L126">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;Books ID not found&quot;));</span>
+<span class="nc" id="L127">        updateBooks.setTitle(title);</span>
+<span class="nc" id="L128">        updateBooks.setYear(year);</span>
+<span class="nc" id="L129">        updateBooks.setPrice(price);</span>
+<span class="nc" id="L130">        updateBooks.setDescription(description);</span>
+<span class="nc" id="L131">        updateBooks.setCondition(condition_book);</span>
+<span class="nc" id="L132">        updateBooks.setPlot(plot);</span>
+<span class="nc" id="L133">        updateBooks.setCover(cover);</span>
+<span class="nc" id="L134">        updateBooks.setNum_pag(num_pag);</span>
+<span class="nc" id="L135">        updateBooks.setLanguage_id(language_id);</span>
+<span class="nc" id="L136">        updateBooks.setAvailability(availability);</span>
+<span class="nc" id="L137">        updateBook_Has_Author.setAuthor_id(author_id);</span>
+<span class="nc" id="L138">        final Books_has_Author updatedBook_Has_Author = booksHauthorRepository.save(updateBook_Has_Author);</span>
+<span class="nc" id="L139">        final Books updatedBooks = booksRepository.save(updateBooks);</span>
 
+<span class="nc" id="L141">        return &quot;Updated&quot;;</span>
+    }
     @GetMapping(&quot;/AllBooks&quot;)
     public @ResponseBody
     Iterable&lt;Books&gt; getAllBooks(){
-<span class="fc" id="L68">        return booksRepository.findAll();</span>
+<span class="fc" id="L146">        return booksRepository.findAll();</span>
     }
 
-    /********************Languages**********************/
+    @GetMapping(&quot;/SomeBooks&quot;)
+    List&lt;Books&gt; getBookssByTitlePiece(@RequestParam String title_piece) {
+<span class="nc" id="L151">        return booksRepository.findByTitleContainingIgnoreCase(title_piece);</span>
+    }
+
+    @DeleteMapping(&quot;/DeleteBooks/{book_id}&quot;)
+    public @ResponseBody
+    String removeBook(@PathVariable int book_id){
+<span class="nc" id="L157">        booksRepository.deleteById(book_id);</span>
+<span class="nc" id="L158">        return &quot;The book was removed&quot;;</span>
+    }
+
+    /********************Books_Has_Author**********************/
+    @GetMapping(&quot;/AllBook_Author&quot;)
+    public @ResponseBody
+    Iterable&lt;Books_has_Author&gt; getAllBooks_has_author(){
+<span class="nc" id="L165">        return booksHauthorRepository.findAll();</span>
+    }
+    @PostMapping(&quot;/AddBooks_Has_Author&quot;)
+    public @ResponseBody
+    String addBook_Author(@RequestParam int books_id, int author_id){
+
+<span class="nc" id="L171">        Books_has_Author addBook_Author = new Books_has_Author(books_id, author_id);</span>
+<span class="nc" id="L172">        booksHauthorRepository.save(addBook_Author);</span>
+<span class="nc" id="L173">        return save;</span>
+    }
+    /********************Images****************************/
+    @PostMapping(&quot;/AddImages&quot;)
+    public @ResponseBody
+    String addImage(@RequestParam  String image1, String image2, String image3, String image4,
+                                   String image5){
+<span class="nc" id="L180">        Images addImage = new Images(image1, image2, image3, image4, image5);</span>
+<span class="nc" id="L181">        imagesRepository.save(addImage);</span>
+<span class="nc" id="L182">        return save;</span>
+    }
+    @GetMapping(&quot;/AllImages&quot;)
+    public @ResponseBody
+    Iterable&lt;Images&gt; getAllImages(){
+<span class="nc" id="L187">        return imagesRepository.findAll();</span>
+    }
+    /********************Languages****************************/
 
     @GetMapping(&quot;/AllLanguages&quot;)
     public @ResponseBody
     Iterable&lt;Language&gt; getAllLanguages(){
-<span class="nc" id="L76">        return languageRepository.findAll();</span>
+<span class="nc" id="L194">        return languageRepository.findAll();</span>
     }
 
     @PostMapping(&quot;/AddLanguages&quot;)
     public @ResponseBody
     String addLanguage(@RequestParam String name){
-<span class="nc" id="L82">        Language addLanguage = new Language(name);</span>
-<span class="nc" id="L83">        languageRepository.save(addLanguage);</span>
-<span class="nc" id="L84">        return save;</span>
+<span class="nc" id="L200">        Language addLanguage = new Language(name);</span>
+<span class="nc" id="L201">        languageRepository.save(addLanguage);</span>
+<span class="nc" id="L202">        return save;</span>
     }
 
     @CrossOrigin(origins = &quot;http://localhost:3000&quot;)
+    //@CrossOrigin(origins = &quot;http://castellar09dec23.s3-website.eu-west-2.amazonaws.com&quot;)
     @PutMapping(&quot;/updateLanguage/{language_id}&quot;)
     public @ResponseBody
     String updateLanguage(@PathVariable int language_id, @RequestParam String name){
-<span class="nc" id="L91">        Language updateLanguage = languageRepository.findById(language_id)</span>
-<span class="nc" id="L92">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;Language ID not found&quot;));</span>
-<span class="nc" id="L93">        updateLanguage.setName(name);</span>
-<span class="nc" id="L94">        final Language updatedLanguage = languageRepository.save(updateLanguage);</span>
-<span class="nc" id="L95">        return &quot;Updated&quot;;</span>
+<span class="nc" id="L210">        Language updateLanguage = languageRepository.findById(language_id)</span>
+<span class="nc" id="L211">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;Language ID not found&quot;));</span>
+<span class="nc" id="L212">        updateLanguage.setName(name);</span>
+<span class="nc" id="L213">        final Language updatedLanguage = languageRepository.save(updateLanguage);</span>
+<span class="nc" id="L214">        return &quot;Updated&quot;;</span>
     }
-
     @DeleteMapping(&quot;/DeleteLanguages/{language_id}&quot;)
     public @ResponseBody
     String removeLanguage(@PathVariable int language_id){
-<span class="nc" id="L101">        languageRepository.deleteById(language_id);</span>
-<span class="nc" id="L102">        return &quot;The language was removed&quot;;</span>
+<span class="nc" id="L219">        languageRepository.deleteById(language_id);</span>
+<span class="nc" id="L220">        return &quot;The language was removed&quot;;</span>
+    }
+    /********************Orders**********************/
+    @GetMapping(&quot;/AllOrders&quot;)
+    public @ResponseBody
+    Iterable&lt;Orders&gt; getAllOrders(){
+<span class="nc" id="L226">        return ordersRepository.findAll();</span>
     }
 
+    @PostMapping(&quot;/AddOrders&quot;)
+    public @ResponseBody
+    String addOrders(@RequestParam String reference_number, String status, String purchase_date,
+                                   int users_id, float price_total, float price_items, int quantity, float shipping_cost) {
+<span class="nc" id="L233">        Orders addOrders = new Orders(reference_number, status, purchase_date, users_id, price_total,price_items ,quantity, shipping_cost);</span>
+<span class="nc" id="L234">        ordersRepository.save(addOrders);</span>
+<span class="nc" id="L235">        Users_has_Orders addUsers_Orders = new Users_has_Orders(addOrders.getOrders_id(), users_id);</span>
+<span class="nc" id="L236">        usersHordersRepository.save(addUsers_Orders);</span>
+<span class="nc" id="L237">        return save;</span>
+    }
+
+    @PutMapping(&quot;/updateOrder/{orders_id}&quot;)
+    public @ResponseBody
+    String updateOrder(@PathVariable int orders_id, @RequestParam String status){
+<span class="nc" id="L243">        Orders updateOrder = ordersRepository.findById(orders_id)</span>
+<span class="nc" id="L244">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;ID not fund&quot;));</span>
+<span class="nc" id="L245">        updateOrder.setStatus(status);</span>
+<span class="nc" id="L246">        final Orders updatedOrder = ordersRepository.save(updateOrder);</span>
+<span class="nc" id="L247">        return &quot;Updated&quot;;</span>
+    }
     /********************Users**********************/
     @PostMapping(&quot;/AddUsers&quot;)
-    public @ResponseBody
-    String addUser(@RequestParam String first_name, String last_name, String email,
-                   String gender, String dob, String username, String password, String city,
-                   String address, String post_code, String phone_number, boolean admin,
-                   String admin_password){
-<span class="nc" id="L112">        Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,</span>
-                                  city, address, post_code, phone_number,admin,admin_password);
-<span class="nc" id="L114">        usersRepository.save(addUser);</span>
-<span class="nc" id="L115">        return save;</span>
+        public @ResponseBody
+        String addUser(@RequestParam String first_name, String last_name, String email,
+                String gender, String dob, String username, String password, String city,
+                String address, String post_code, String phone_number, boolean admin,
+                String admin_password){
+<span class="nc" id="L256">            Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,</span>
+                    city, address, post_code, phone_number,admin,admin_password);
+<span class="nc" id="L258">            usersRepository.save(addUser);</span>
+
+<span class="nc" id="L260">            return save;</span>
     }
     @GetMapping(&quot;/AllUsers&quot;)
     public @ResponseBody
     Iterable&lt;Users&gt; getAllUsers(){
-<span class="nc" id="L120">        return usersRepository.findAll();</span>
+<span class="nc" id="L265">        return usersRepository.findAll();</span>
+    }
+
+    @GetMapping(&quot;/SomeUsers/username&quot;) //method to get users by username
+    public ResponseEntity&lt;List&lt;Users&gt;&gt; getUserByName(@RequestParam String username){
+<span class="nc" id="L270">        return new ResponseEntity&lt;List&lt;Users&gt;&gt;(usersRepository.findByUsername(username), HttpStatus.OK);</span>
     }
 
     @DeleteMapping(&quot;/DeleteUsers/{users_id}&quot;)
     public @ResponseBody
     String removeUser(@PathVariable int users_id){
-<span class="nc" id="L126">        usersRepository.deleteById(users_id);</span>
-<span class="nc" id="L127">        return &quot;The user was removed&quot;;</span>
+<span class="nc" id="L276">        usersRepository.deleteById(users_id);</span>
+<span class="nc" id="L277">        return &quot;The user was removed&quot;;</span>
     }
     @PutMapping(&quot;/updateUser/{users_id}&quot;)
     public @ResponseBody
@@ -132,23 +282,38 @@ public class CastellarDBApplication {
                       String email, String gender, String dob, String username, String password,
                       String city, String address, String post_code, String phone_number,
                       boolean admin, String admin_password){
-<span class="nc" id="L135">        Users updateUser = usersRepository.findById(users_id)</span>
-<span class="nc" id="L136">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;User ID not found&quot;));</span>
-<span class="nc" id="L137">        updateUser.setFirst_name(first_name);</span>
-<span class="nc" id="L138">        updateUser.setLast_name(last_name);</span>
-<span class="nc" id="L139">        updateUser.setEmail(email);</span>
-<span class="nc" id="L140">        updateUser.setGender(gender);</span>
-<span class="nc" id="L141">        updateUser.setDob(dob);</span>
-<span class="nc" id="L142">        updateUser.setUsername(username);</span>
-<span class="nc" id="L143">        updateUser.setPassword(password);</span>
-<span class="nc" id="L144">        updateUser.setCity(city);</span>
-<span class="nc" id="L145">        updateUser.setAddress(address);</span>
-<span class="nc" id="L146">        updateUser.setPost_code(post_code);</span>
-<span class="nc" id="L147">        updateUser.setPhone_number(phone_number);</span>
-<span class="nc" id="L148">        updateUser.setAdmin(admin);</span>
-<span class="nc" id="L149">        updateUser.setAdmin_password(admin_password);</span>
-<span class="nc" id="L150">        final Users updatedUser = usersRepository.save(updateUser);</span>
-<span class="nc" id="L151">        return &quot;Updated&quot;;</span>
+<span class="nc" id="L285">        Users updateUser = usersRepository.findById(users_id)</span>
+<span class="nc" id="L286">                .orElseThrow(() -&gt;new ResourceNotFoundException(&quot;User ID not found&quot;));</span>
+<span class="nc" id="L287">        updateUser.setFirst_name(first_name);</span>
+<span class="nc" id="L288">        updateUser.setLast_name(last_name);</span>
+<span class="nc" id="L289">        updateUser.setEmail(email);</span>
+<span class="nc" id="L290">        updateUser.setGender(gender);</span>
+<span class="nc" id="L291">        updateUser.setDob(dob);</span>
+<span class="nc" id="L292">        updateUser.setUsername(username);</span>
+<span class="nc" id="L293">        updateUser.setPassword(password);</span>
+<span class="nc" id="L294">        updateUser.setCity(city);</span>
+<span class="nc" id="L295">        updateUser.setAddress(address);</span>
+<span class="nc" id="L296">        updateUser.setPost_code(post_code);</span>
+<span class="nc" id="L297">        updateUser.setPhone_number(phone_number);</span>
+<span class="nc" id="L298">        updateUser.setAdmin(admin);</span>
+<span class="nc" id="L299">        updateUser.setAdmin_password(admin_password);</span>
+<span class="nc" id="L300">        final Users updatedUser = usersRepository.save(updateUser);</span>
+<span class="nc" id="L301">        return &quot;Updated&quot;;</span>
+    }
+    @GetMapping(&quot;/UsersByID/{users_id}&quot;)
+    public @ResponseBody
+    Optional&lt;Users&gt; getUsersByID(@PathVariable int users_id){
+
+<span class="nc" id="L307">        return usersRepository.findById(users_id);</span>
+    }
+    /********************Users_Has_Orders**********************/
+    @PostMapping(&quot;/AddUsers_Has_Order&quot;)
+    public @ResponseBody
+    String addUser_Order(@RequestParam int orders_id, int users_id){
+
+<span class="nc" id="L314">        Users_has_Orders addUser_Order = new Users_has_Orders(orders_id, users_id);</span>
+<span class="nc" id="L315">        usersHordersRepository.save(addUser_Order);</span>
+<span class="nc" id="L316">        return save;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -16,7 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Homepage")
-@CrossOrigin(origins = "http://localhost:3000")
+
+@CrossOrigin(origins = {"http://localhost:3000", "http://castellar09dec23.s3-website.eu-west-2.amazonaws.com"})
 public class CastellarDBApplication {
 
     @Autowired
@@ -84,7 +85,8 @@ public class CastellarDBApplication {
         authorRepository.deleteById(author_id);
         return "The author was removed";
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://castellar09dec23.s3-website.eu-west-2.amazonaws.com"})
+    //@CrossOrigin(origins = "http://castellar09dec23.s3-website.eu-west-2.amazonaws.com")
     @PutMapping("/updateAuthors/{author_id}")
     public @ResponseBody
     String updateAuthor(@PathVariable int author_id, @RequestParam  String first_name, 
@@ -201,6 +203,7 @@ public class CastellarDBApplication {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    //@CrossOrigin(origins = "http://castellar09dec23.s3-website.eu-west-2.amazonaws.com")
     @PutMapping("/updateLanguage/{language_id}")
     public @ResponseBody
     String updateLanguage(@PathVariable int language_id, @RequestParam String name){
@@ -226,10 +229,8 @@ public class CastellarDBApplication {
     @PostMapping("/AddOrders")
     public @ResponseBody
     String addOrders(@RequestParam String reference_number, String status, String purchase_date,
-                                   int users_id, float price_total, int quantity, float shipping_cost) {
-        Orders addOrders = new Orders(reference_number, status, purchase_date, users_id,
-
-                               price_total, quantity, shipping_cost);
+                                   int users_id, float price_total, float price_items, int quantity, float shipping_cost) {
+        Orders addOrders = new Orders(reference_number, status, purchase_date, users_id, price_total,price_items ,quantity, shipping_cost);
         ordersRepository.save(addOrders);
         Users_has_Orders addUsers_Orders = new Users_has_Orders(addOrders.getOrders_id(), users_id);
         usersHordersRepository.save(addUsers_Orders);
@@ -251,9 +252,9 @@ public class CastellarDBApplication {
         String addUser(@RequestParam String first_name, String last_name, String email,
                 String gender, String dob, String username, String password, String city,
                 String address, String post_code, String phone_number, boolean admin,
-                String admin_password){
+                String admin_password, String state){
             Users addUser = new Users(first_name,last_name,gender, dob, email,username, password,
-                    city, address, post_code, phone_number,admin,admin_password);
+                    city, address, post_code, phone_number,admin,admin_password, state);
             usersRepository.save(addUser);
 
             return save;
@@ -280,7 +281,7 @@ public class CastellarDBApplication {
     String updateUser(@PathVariable int users_id, @RequestParam String first_name, String last_name,
                       String email, String gender, String dob, String username, String password,
                       String city, String address, String post_code, String phone_number,
-                      boolean admin, String admin_password){
+                      boolean admin, String admin_password, String state){
         Users updateUser = usersRepository.findById(users_id)
                 .orElseThrow(() ->new ResourceNotFoundException("User ID not found"));
         updateUser.setFirst_name(first_name);
@@ -296,8 +297,27 @@ public class CastellarDBApplication {
         updateUser.setPhone_number(phone_number);
         updateUser.setAdmin(admin);
         updateUser.setAdmin_password(admin_password);
+        updateUser.setState(state);
         final Users updatedUser = usersRepository.save(updateUser);
         return "Updated";
+    }
+
+    @PutMapping("/activateUser/{username}")
+    public String getProductByName(@PathVariable String username) {
+        Users updateUser = usersRepository.findOnlyByUsername(username);
+
+        if(updateUser.getState().equals("active")){
+            return "Already active";
+        }else{
+            updateUser.setState("active");
+            final Users updatedUser = usersRepository.save(updateUser);
+            if (updateUser != null) {
+                return "Activated";
+            } else {
+                return "Something went wrong";
+            }
+        }
+
     }
     @GetMapping("/UsersByID/{users_id}")
     public @ResponseBody

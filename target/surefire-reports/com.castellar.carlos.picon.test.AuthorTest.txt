@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.castellar.carlos.picon.test.AuthorTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 s - in com.castellar.carlos.picon.test.AuthorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.099 s - in com.castellar.carlos.picon.test.AuthorTest
